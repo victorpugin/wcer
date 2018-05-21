@@ -10,8 +10,8 @@
     "url": "git://github.com/YuraDev/wcer.git"
   },
   "scripts": {
-    "pro": "webpack",
-    "dev": "webpack --watch",
+    "pro": "webpack --mode=production",
+    "dev": "webpack --mode=development --watch",
     "client": "webpack --color --config client/webpack.config.js"
   },
   "author": "Zaporozhets Yura <works.yura@gmail.com>",
@@ -40,10 +40,10 @@
     "@types/node": "^8.5.1",
     "@types/webpack": "^3.0.13",
     "raw-loader": "^0.5.1",
-    "ts-loader": "^2.3.7",
+    "ts-loader": "^4.3.0",
     "tslint": "^4.5.1",
     "tslint-loader": "^3.5.3",
     "typescript": "^2.6.2",
-    "webpack": "^3.10.0"
+    "webpack": "^4.8.3"
   }
 }
