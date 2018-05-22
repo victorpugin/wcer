@@ -109,12 +109,24 @@ export default class ReloadPlugin extends AbstractPlugin {
     return done()
   }
   apply(compiler) {
-    compiler.plugin("watch-run", (comp, done) => this.watcher(comp, done))
-    compiler.plugin("compile", (comp) => this.compile(comp))
-    compiler.plugin('compilation',
-    (comp) => comp.plugin('after-optimize-chunk-assets',
-      (chunks) => this.injector(comp, chunks)))
-    compiler.plugin('after-emit', (comp, done) => this.triggered(comp, done))
-    compiler.plugin('emit', (comp, done) => this.generate(comp, done))
+    if (compiler.hooks) {
+      const plugin = { name: 'WcerPlugin' };
+
+      compiler.hooks.watchRun.tapAsync(plugin, (comp, done) => this.watcher(comp, done))
+      compiler.hooks.compile.tap(plugin, (comp) => this.compile(comp))
+      compiler.hooks.compilation.tap(plugin,
+      (comp) => comp.hooks.afterOptimizeChunkAssets.tap(plugin,
+        (chunks) => this.injector(comp, chunks)))
+      compiler.hooks.afterEmit.tapAsync(plugin, (comp, done) => this.triggered(comp, done))
+      compiler.hooks.emit.tapAsync(plugin, (comp, done) => this.generate(comp, done))
+    } else {
+      compiler.plugin("watch-run", (comp, done) => this.watcher(comp, done))
+      compiler.plugin("compile", (comp) => this.compile(comp))
+      compiler.plugin('compilation',
+      (comp) => comp.plugin('after-optimize-chunk-assets',
+        (chunks) => this.injector(comp, chunks)))
+      compiler.plugin('after-emit', (comp, done) => this.triggered(comp, done))
+      compiler.plugin('emit', (comp, done) => this.generate(comp, done))
+    }
   }
 }
